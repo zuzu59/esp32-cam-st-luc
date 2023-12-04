@@ -1,6 +1,6 @@
 #!/bin/ash
 #Petit script pour envoyer une image sur un serveur d'images via scp (ssh)
-#zf231204.1626
+#zf231204.1700
 
 
 #test si l'argument est vide
@@ -9,19 +9,22 @@ if [ -z "$1" ]
     echo -e "
 Syntax:
 
-./send_image.sh.sh image_server image_folder image_name
+/send_image.sh image_local user@server image_folder image_name
 
 "
     exit
 fi
 
 echo -e "
-Serveur pour les images: $1
-Dossier pour l'image: $2
-Nom de l'image: $3
+Image locale: $1
+Serveur pour les images: $2
+Dossier pour l'image: $3
+Nom de l'image: $4
 "
 
-
+#Envoie l'image dans la structure images
+ssh $2 "mkdir -p $3"
+scp $1 $2:/$3/$4
 
 
 

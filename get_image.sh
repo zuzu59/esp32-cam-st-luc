@@ -1,33 +1,42 @@
 #!/bin/ash
 #Petit script pour prendre une image de la mini caméras esp32-cam et l'envoyer sur un serveur d'images
-#zf231204.1521
+#zf231204.1721
 
 
 zAPP_FOLDER=$(/usr/bin/dirname $0)
-zDATA_FOLDER=$zAPP_FOLDER/data
+zDATA_FOLDER=/home/ubuntu/data
 zIMAGES_FOLDER=$zDATA_FOLDER/images
 zACTUAL_FOLDER=$zDATA_FOLDER/actual
+zIMAGE_LOCAL=/root/actual.jpg
 
 zYEAR=`date +%Y` 
 zMONTH=`date +%m`
 zDAY=`date +%d`
 zTIME=`date +%H%M%S` 
 
-zTARGET=$zIMAGES_FOLDER/$zYEAR/$zMONTH/$zDAY
+zTARGET_IMAGE=$zIMAGES_FOLDER/$zYEAR/$zMONTH/$zDAY
+zTARGET_ACTUAL=$zACTUAL_FOLDER
 
 source $zAPP_FOLDER/secrets.sh
 
 echo -e "
 App folder: $zAPP_FOLDER
-zTARGET: $zTARGET
+zIMAGE_LOCAL: $zIMAGE_LOCAL
+zTARGET_IMAGE: $zTARGET_IMAGE
+zTARGET_ACTUAL: $zTARGET_ACTUAL
 zAPP_SERVER_NAME: $zAPP_SERVER_NAME
 zAPP_SERVER_USER: $zAPP_SERVER_USER
 
 "
 
 
-#wget -O /root/actual.jpg http://192.168.1.61/1600x1200.jpg
+wget -O $zIMAGE_LOCAL http://192.168.1.61/1600x1200.jpg
 
+#Envoie l'image dans la structure images
+$zAPP_FOLDER/send_image.sh $zIMAGE_LOCAL $zAPP_SERVER_USER@$zAPP_SERVER_NAME $zTARGET_IMAGE $zTIME.jpg
+
+#Envoie l'image dans la structure actual
+$zAPP_FOLDER/send_image.sh $zIMAGE_LOCAL $zAPP_SERVER_USER@$zAPP_SERVER_NAME $zTARGET_ACTUAL actual.jpg
 
 
 exit
