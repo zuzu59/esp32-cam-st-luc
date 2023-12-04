@@ -15,7 +15,19 @@ zTIME=`date +%H%M%S`
 
 zTARGET=$zIMAGES_FOLDER/$zYEAR/$zMONTH/$zDAY
 
-echo -e $zTARGET
+source $zAPP_FOLDER/secrets.sh
+
+echo -e "
+App folder: $zAPP_FOLDER
+zTARGET: $zTARGET
+zAPP_SERVER_NAME: $zAPP_SERVER_NAME
+zAPP_SERVER_USER: $zAPP_SERVER_USER
+
+"
+
+
+#wget -O /root/actual.jpg http://192.168.1.61/1600x1200.jpg
+
 
 
 exit
