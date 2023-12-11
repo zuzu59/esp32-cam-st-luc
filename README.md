@@ -1,21 +1,23 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.1732
+zf231204.1505, zf231211.1746
+
 
 
 ## Buts
-Pouvoir **voir** la météo en direct à St-Luc avec une mini caméra low cost à base de ESP32-CAM !
+Pouvoir *voir* la météo en direct à St-Luc avec une mini caméra low cost à base de ESP32-CAM !
 
 On peut très facilement écrire avec l'Arduino IDE un firmware sur mesure pour ces mini caméras qui permettent juste de prendre une photos JPG avec un petit serveur WEB intégré.
 
-Comme la connexion Internet de St-Luc est un modem 4G il n'y a pas moyen de se connecter sur la caméra pour voir les images. On utilise donc un serveur dans le cloud pour le faire.
+Comme la connexion Internet de St-Luc est un modem 4G, il n'y a pas moyen de se connecter, via l'ouverture d'un port NAT, sur la caméra pour voir les images. On utilise donc un serveur dans le 
+cloud pour le faire.
 
-Une moulinette, sur un mini routeur OpenWRT Mango, va interroger les mini caméras de surveillance pour prendre une photo toutes les minutes et les envoyer sur un serveur Linux dans le cloud va 
-ssh.<br>
-A la fin de la journée une petite vidéo d'environ 26 secondes est faite pour le résumé 
-de la journée de ces photos.<br>
-Su le serveur du cloud, tourne un mini serveur WEB qui permet de facilement consulter soit les images soit les vidéos
+Une moulinette, sur un mini routeur OpenWRT Mango, va interroger les mini caméras de surveillance pour prendre une photo toutes les minutes (avec un wget sur le petit serveur WEB de la mini 
+caméra) et les envoyer sur un serveur Linux dans le cloud via ssh.<br>
+Toutes les 5 minutes une petite vidéo (environ 26 secondes pour la période de 7h à 18h) est faite pour le résumé de la journée de ces photos.<br>
+Sur le serveur du cloud, tourne un mini serveur WEB qui permet de facilement consulter soit les images soit les vidéos.
+
 
 
 ## Prérequis
@@ -25,10 +27,14 @@ Su le serveur du cloud, tourne un mini serveur WEB qui permet de facilement cons
 * Avoir Arduino IDE pour flasher le firmware
 
 
+
 ## Utilisation
-### Même dépôt GitHub pour le mini routeur OpenWRT Mango que sur le serveur dans le cloud !
+### Dépôt GitHub du projet
+Même dépôt GitHub pour le mini routeur OpenWRT Mango que sur le serveur dans le cloud !
 
 git clone git@github.com:zuzu59/esp32-cam-st-luc.git
+
+
 
 ### Utilisation des secrets !
 Afin de garder quelques informations confidentielles, on utilise un fichier de secrets.
@@ -112,11 +118,17 @@ Cela va faire une vidéo résumée de la journée
 
 
 ## Firmware à flasher dans les mini caméras ESP32-CAM
-Pour l'instant (zf231113.1207) il n'est pas encore documenté ici :-(
+Il faut utiliser Arduino IDE pour flasher la mini caméra ESP32-CAM avec le fichier:
 
-Mais ses sources sont inspirés de ceci:
+```
+WifiCam.ino
+```
 
+Je me suis fortement inspiré de ceci pour mon firmware:
+
+```
 https://github.com/yoursunny/esp32cam/tree/main/examples/WifiCam
+```
 
 
 
