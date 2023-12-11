@@ -1,7 +1,7 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.1750
+zf231204.1505, zf231211.1806
 
 
 
@@ -116,6 +116,32 @@ crontab -e
 */5 * * * * /home/ubuntu/dev/esp32-cam-st-luc/make_video_all.sh
 ```
 Cela va faire une vidéo résumée de la journée
+
+
+
+### Petit serveur WEB pour consulter les images et vidéos de la caméra de St-Luc
+Sur le serveur Linux dans le cloud, celui qui est accéssible sur Internet, tourne un mini serveur WEB, il faut mettre ceci dans le crontab avec:
+
+```
+crontab -e
+@reboot  sleep 30 && /home/ubuntu/dev/esp32-cam-st-luc/start_web_server.sh
+```
+
+Ainsi quand le serveur va redémarrer, le mini serveur WEB va aussi démarrer
+
+On peut accéder:
+
+* aux images avec son browser sur:
+
+http://serveur/images
+
+* aux vidéos avec son browser sur:
+
+http://serveur/vidéos
+
+* à la dernière image et vidéo avec son browser sur:
+
+http://serveur/actual
 
 
 
