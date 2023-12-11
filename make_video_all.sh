@@ -1,6 +1,6 @@
 #!/bin/bash
 # Petit script pour la réalisation d'un petit film à base d'images pour la caméra de St-Luc
-# zf231209.1736
+# zf231209.1736, zf231211.1623
 #
 # Sources: https://www.rickmakes.com/create-timelapse-from-ip-camera-using-curl-wget-and-ffmpeg/
 
@@ -34,49 +34,12 @@ cp $zTARGET_VIDEOS/0_video.mp4 $zACTUAL_FOLDER/actual.mp4
 
 
 
-exit
-
-
-
-
-zESPACE="bois"
-mkdir -p $zTARGET_VIDEOS/$zESPACE
-rm $zTARGET_VIDEOS/$zESPACE/0_video.mp4
-$zAPP_FOLDER/make_video_one.sh $zTARGET_IMAGES/$zESPACE $zTARGET_VIDEOS/$zESPACE
-cp $zTARGET_VIDEOS/$zESPACE/0_video.mp4 $zACTUAL_FOLDER/$zESPACE.mp4
-
-zESPACE="metal"
-mkdir -p $zTARGET_VIDEOS/$zESPACE
-rm $zTARGET_VIDEOS/$zESPACE/0_video.mp4
-$zAPP_FOLDER/make_video_one.sh $zTARGET_IMAGES/$zESPACE $zTARGET_VIDEOS/$zESPACE
-cp $zTARGET_VIDEOS/$zESPACE/0_video.mp4 $zACTUAL_FOLDER/$zESPACE.mp4
-
-zESPACE="laser"
-mkdir -p $zTARGET_VIDEOS/$zESPACE
-rm $zTARGET_VIDEOS/$zESPACE/0_video.mp4
-$zAPP_FOLDER/make_video_one.sh $zTARGET_IMAGES/$zESPACE $zTARGET_VIDEOS/$zESPACE
-cp $zTARGET_VIDEOS/$zESPACE/0_video.mp4 $zACTUAL_FOLDER/$zESPACE.mp4
-
-zESPACE="social"
-mkdir -p $zTARGET_VIDEOS/$zESPACE
-rm $zTARGET_VIDEOS/$zESPACE/0_video.mp4
-$zAPP_FOLDER/make_video_one.sh $zTARGET_IMAGES/$zESPACE $zTARGET_VIDEOS/$zESPACE
-cp $zTARGET_VIDEOS/$zESPACE/0_video.mp4 $zACTUAL_FOLDER/$zESPACE.mp4
-
-
-zESPACE="mosaic"
-mkdir -p $zTARGET_VIDEOS/$zESPACE
-rm $zTARGET_VIDEOS/$zESPACE/0_video.mp4
-$zAPP_FOLDER/make_video_one.sh $zTARGET_IMAGES/$zESPACE $zTARGET_VIDEOS/$zESPACE
-cp $zTARGET_VIDEOS/$zESPACE/0_video.mp4 $zACTUAL_FOLDER/$zESPACE.mp4
-
-
-
 echo -e "
 
 Si jamais pour info:
 
 crontab -e
-*/5 * * * * /home/ubuntu/dev/esp32-cam-msl/make_video_all.sh  (réalise une vidéo toutes les 5 minutes)
+*/5 * * * * /home/ubuntu/dev/esp32-cam-st-luc/make_video_all.sh
+
 
 "
