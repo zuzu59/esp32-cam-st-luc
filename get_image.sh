@@ -1,6 +1,6 @@
 #!/bin/ash
 #Petit script pour prendre une image de la mini caméras esp32-cam et l'envoyer sur un serveur d'images
-#zf231204.1721
+#zf231204.1721, zf231211.1431
 
 
 zAPP_FOLDER=$(/usr/bin/dirname $0)
@@ -39,33 +39,6 @@ $zAPP_FOLDER/send_image.sh $zIMAGE_LOCAL $zAPP_SERVER_USER@$zAPP_SERVER_NAME $zT
 $zAPP_FOLDER/send_image.sh $zIMAGE_LOCAL $zAPP_SERVER_USER@$zAPP_SERVER_NAME $zTARGET_ACTUAL actual.jpg
 
 
-exit
-
-
-
-zESPACE=bois
-$zAPP_FOLDER/capture_one.sh $zTARGET/$zESPACE 192.168.8.60 $zTIME.jpg
-cp $zTARGET/$zESPACE/$zTIME.jpg $zACTUAL_FOLDER/$zESPACE.jpg
-
-zESPACE=metal
-$zAPP_FOLDER/capture_one.sh $zTARGET/$zESPACE 192.168.8.61 $zTIME.jpg
-cp $zTARGET/$zESPACE/$zTIME.jpg $zACTUAL_FOLDER/$zESPACE.jpg
-
-zESPACE=laser
-$zAPP_FOLDER/capture_one.sh $zTARGET/$zESPACE 192.168.8.62 $zTIME.jpg
-cp $zTARGET/$zESPACE/$zTIME.jpg $zACTUAL_FOLDER/$zESPACE.jpg
-
-zESPACE=social
-$zAPP_FOLDER/capture_one.sh $zTARGET/$zESPACE 192.168.8.63 $zTIME.jpg
-cp $zTARGET/$zESPACE/$zTIME.jpg $zACTUAL_FOLDER/$zESPACE.jpg
-
-
-zESPACE=mosaic
-$zAPP_FOLDER/make_mosaic.sh $zTARGET $zTIME
-cp $zTARGET/$zESPACE/$zTIME.jpg $zACTUAL_FOLDER/$zESPACE.jpg
-
-
-
 
 
 
@@ -73,8 +46,20 @@ echo -e "
 
 Si jamais pour info:
 
-crontab -e
-*/1 * * * * /home/ubuntu/dev/esp32-cam-msl/capture_all.sh  (capture une image toutes les 1 minutes)
+export VISUAL=nano; crontab -e
+
+*/1 7/18 * * * /mnt/sda1/zuzu/esp32-cam-st-luc/get_image.sh
+
+crontab -l
+
+IMPORTANT, APRES IL FAUT FAIRE CECI:
+
+service cron restart
+
+
+
+
+
 
 "
 
