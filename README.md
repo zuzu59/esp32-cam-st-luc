@@ -1,7 +1,7 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.1806
+zf231204.1505, zf231211.1811
 
 
 
@@ -14,7 +14,7 @@ Comme la connexion Internet de St-Luc est un modem 4G, il n'y a pas moyen de se 
 accéssible sur Internet, dans le cloud pour le faire.
 
 Une moulinette, sur un mini routeur OpenWRT Mango, va interroger les mini caméras de surveillance pour prendre une photo toutes les minutes (avec un wget sur le petit serveur WEB de la mini 
-caméra) et les envoyer sur un serveur Linux dans le cloud via ssh.<br>
+caméra) et les envoyer sur un serveur Linux dans le cloud via ssh (environ images & vidéos, 50MB/j).<br>
 Toutes les 5 minutes une petite vidéo (environ 26 secondes pour la période de 7h à 18h) est faite pour le résumé de la journée de ces photos.<br>
 Sur le serveur du cloud, tourne un mini serveur WEB qui permet de facilement consulter soit les images soit les vidéos.
 
