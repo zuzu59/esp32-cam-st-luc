@@ -1,7 +1,7 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.1811
+zf231204.1505, zf231211.2121
 
 
 
@@ -11,7 +11,7 @@ Pouvoir *voir* la météo en direct à St-Luc avec une mini caméra low cost à 
 On peut très facilement écrire avec l'Arduino IDE un firmware sur mesure pour ces mini caméras qui permettent juste de prendre une photos JPG avec un petit serveur WEB intégré.
 
 Comme la connexion Internet de St-Luc est un modem 4G, il n'y a pas moyen de se connecter, via l'ouverture d'un port NAT, sur la caméra pour voir les images. On utilise donc un serveur, 
-accéssible sur Internet, dans le cloud pour le faire.
+accessible sur Internet, dans le cloud pour le faire.
 
 Une moulinette, sur un mini routeur OpenWRT Mango, va interroger les mini caméras de surveillance pour prendre une photo toutes les minutes (avec un wget sur le petit serveur WEB de la mini 
 caméra) et les envoyer sur un serveur Linux dans le cloud via ssh (environ images & vidéos, 50MB/j).<br>
@@ -22,7 +22,7 @@ Sur le serveur du cloud, tourne un mini serveur WEB qui permet de facilement con
 
 ## Prérequis
 * Un mini router OpenWRT Mango à St-Luc
-* Avoir une machine Linux dans le cloud accéssible sur Internet
+* Avoir une machine Linux dans le cloud accessible sur Internet
 * Avoir des mini caméras ESP32-CAM
 * Avoir Arduino IDE pour flasher le firmware
 
