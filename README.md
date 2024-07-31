@@ -1,7 +1,7 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.2121
+zf231204.1505, zf231211.2121, zf240731.1624
 
 
 
@@ -120,7 +120,15 @@ Cela va faire une vidéo résumée de la journée
 
 
 ### Petit serveur WEB pour consulter les images et vidéos de la caméra de St-Luc
-Sur le serveur Linux dans le cloud, celui qui est accéssible sur Internet, tourne un mini serveur WEB, il faut mettre ceci dans le crontab avec:
+Sur le serveur Linux dans le cloud, celui qui est accéssible sur Internet, tourne un mini serveur WEB, 
+il faut l'installer avec
+
+```
+sudo apt update
+sudo apt install lighttpd
+```
+
+et mettre ceci dans le crontab avec:
 
 ```
 crontab -e
