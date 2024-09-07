@@ -3,7 +3,7 @@
 // ATTENTION, ce code a été testé sur un ESP32-cam. Pas testé sur les autres boards !
 // Initial commit zf231111
 //
-#define zVERSION        "zf240907.1541"
+#define zVERSION        "zf240907.1554"
 #define zHOST           "esp-cam-st-luc"        // ATTENTION, tout en minuscule
 #define zDSLEEP         0                       // 0 ou 1 !
 #define TIME_TO_SLEEP   120                     // dSleep en secondes 
@@ -65,14 +65,6 @@ const int ledPin = 33;             // the number of the LED pin
 #include "otaWebServer.h"
 
 
-#if zDSLEEP == 1
-  // Deep Sleep
-  #define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
-  // #define TIME_TO_SLEEP  300      /* Time ESP32 will go to sleep (in seconds) */
-  RTC_DATA_ATTR int bootCount = 0;
-#endif
-
-
 // Source: https://randomnerdtutorials.com/esp32-static-fixed-ip-address-arduino-ide/
 // Set your Static IP address
 IPAddress local_IP(192, 168, 1, 61);
@@ -89,30 +81,18 @@ esp32cam::Resolution initialResolution;
 WebServer server(80);
 
 void
-setup()
-{
-
-// Pulse deux fois pour dire que l'on démarre
+setup(){
+  // Pulse deux fois pour dire que l'on démarre
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW); delay(zSonarPulseOn); digitalWrite(ledPin, HIGH); delay(zSonarPulseOff);
   digitalWrite(ledPin, LOW); delay(zSonarPulseOn); digitalWrite(ledPin, HIGH); delay(zSonarPulseOff);
   delay(zSonarPulseWait);
 
   // Start serial console
-  USBSerial.begin(19200);
-  USBSerial.setDebugOutput(true);       //pour voir les messages de debug des libs sur la console série !
+  Serial.begin(19200);
+  Serial.setDebugOutput(true);       //pour voir les messages de debug des libs sur la console série !
   delay(3000);                          //le temps de passer sur la Serial Monitor ;-)
-  USBSerial.println("\n\n\n\n**************************************\nCa commence !"); USBSerial.println(zHOST ", " zVERSION);
-
-  #if zDSLEEP == 1
-    //Increment boot number and print it every reboot
-    ++bootCount;
-    sensorValue4 = bootCount;
-    USBSerial.println("Boot number: " + String(bootCount));
-    // Configuration du dsleep
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
-    USBSerial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) + " Seconds");
-  #endif
+  Serial.println("\n\n\n\n**************************************\nCa commence !"); Serial.println(zHOST ", " zVERSION);
 
   // Start WIFI
   zStartWifi();
@@ -121,67 +101,23 @@ setup()
   // Start OTA server
   otaWebServer();
 
-  // Connexion au MQTT
-  USBSerial.println("\n\nConnect MQTT !\n");
-  ConnectMQTT();
-
   // go go go
-  USBSerial.println("\nC'est parti !\n");
+  Serial.println("\nC'est parti !\n");
 
-  // Envoie toute la sauce !
-  zEnvoieTouteLaSauce();
-  USBSerial.println("\nC'est envoyé !\n");
+  using namespace esp32cam;
+  initialResolution = Resolution::find(1024, 768);
+  Config cfg;
+  cfg.setPins(pins::AiThinker);
+  cfg.setResolution(initialResolution);
+  cfg.setJpeg(80);
 
-  #if zDSLEEP == 1
-    // Partie dsleep. On va dormir !
-    USBSerial.println("Going to sleep now");
-    delay(200);
-    USBSerial.flush(); 
-    esp_deep_sleep_start();
-    USBSerial.println("This will never be printed");
-  #endif
-
-
-
-
-
-
-
-
-  Serial.begin(19200);
-  Serial.println();
-  delay(2000);
-
-  WiFi.persistent(false);
-  WiFi.mode(WIFI_STA);
-  WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
-  WiFi.begin(zWIFI_SSID, zWIFI_PASS);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("WiFi failure");
+  bool ok = Camera.begin(cfg);
+  if (!ok) {
+    Serial.println("camera initialize failure");
     delay(5000);
     ESP.restart();
   }
-  Serial.println("WiFi connected");
-
-  {
-    using namespace esp32cam;
-
-    initialResolution = Resolution::find(1024, 768);
-
-    Config cfg;
-    cfg.setPins(pins::AiThinker);
-    cfg.setResolution(initialResolution);
-    cfg.setJpeg(80);
-
-    bool ok = Camera.begin(cfg);
-    if (!ok) {
-      Serial.println("camera initialize failure");
-      delay(5000);
-      ESP.restart();
-    }
-    Serial.println("camera initialize success");
-  }
-
+  Serial.println("camera initialize success");
   Serial.println("camera starting");
   Serial.print("http://");
   Serial.println(WiFi.localIP());
@@ -197,52 +133,20 @@ loop()
 }
 
 
-
 void loop() {
-  // Envoie toute la sauce !
-  zEnvoieTouteLaSauce();
-
-  // Délais non bloquant pour le sonarpulse et l'OTA
-  zDelay1(zDelay1Interval);
+    // WEB server
+    server.handleClient();
+    // OTA loop
+    server.handleClient();
+    // Délais non bloquant pour le sonarpulse
+    zDelay1(zDelay1Interval);
 }
 
 
-// Envoie toute la sauce !
-void zEnvoieTouteLaSauce(){
-
-  // Lit les températures
-  readSensor();
-
-  // Envoie les mesures au MQTT
-  sendSensorMqtt();
-
-  // Graphe sur l'Arduino IDE les courbes des mesures
-  USBSerial.print("sensor1:");
-  USBSerial.print(sensorValue1);
-  USBSerial.print(",tempInternal1:");
-  USBSerial.print(tempInternal1);
-  USBSerial.print(",tempInternal2:");
-  USBSerial.print(tempInternal2);
-
-  USBSerial.print(",temp_HTU21D:");
-  USBSerial.print(sensorValue5);
-  USBSerial.print(",hum_HTU21D:");
-  USBSerial.print(sensorValue2);
-
-  // USBSerial.print(",sensor3:");
-  // USBSerial.print(sensorValue3);
-  // USBSerial.print(",sensor4:");
-  // USBSerial.print(sensorValue4);
-  USBSerial.println("");
-}
-
-
-// Délais non bloquant pour le sonarpulse et l'OTA
+// Délais non bloquant pour le sonarpulse
 void zDelay1(long zDelayMili){
   long zDelay1NextMillis = zDelayMili + millis(); 
   while(millis() < zDelay1NextMillis ){
-    // OTA loop
-    server.handleClient();
     // Un petit coup sonar pulse sur la LED pour dire que tout fonctionne bien
     sonarPulse();
   }
