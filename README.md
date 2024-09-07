@@ -1,7 +1,7 @@
 # esp32-cam-st-luc
 Petit système pour gérer la mini caméra de surveillance de St-Luc
 
-zf231204.1505, zf231211.2121, zf240731.1624
+zf231204.1505, zf231211.2121, zf240907.1518
 
 
 
@@ -159,6 +159,9 @@ Il faut utiliser Arduino IDE pour flasher la mini caméra ESP32-CAM avec le fich
 ```
 WifiCam.ino
 ```
+
+Il faut utiliser le board: **Ai Thinker ESP32-CAM**
+
 
 Je me suis fortement inspiré de ceci pour mon firmware:
 
