@@ -1,14 +1,15 @@
 // Source: https://github.com/yoursunny/esp32cam/tree/main/examples/WifiCam
 // C'est pour St-Luc !
-// zf231130.1529
+// zf231130.1529, zf240907.1108
 
 #include "WifiCam.hpp"
 #include <WiFi.h>
 
 // Source: https://www.arduino.cc/reference/en/libraries/wifi/wifi.config/
 
-const char* WIFI_SSID = "apdomo";
-const char* WIFI_PASS = "12333456";
+#include "secrets.h"
+const char* zWIFI_SSID = WIFI_SSID8;
+const char* zWIFI_PASS = WIFI_PASSWORD8;
 
 // Source: https://randomnerdtutorials.com/esp32-static-fixed-ip-address-arduino-ide/
 // Set your Static IP address
@@ -28,14 +29,14 @@ WebServer server(80);
 void
 setup()
 {
-  Serial.begin(115200);
+  Serial.begin(19200);
   Serial.println();
   delay(2000);
 
   WiFi.persistent(false);
   WiFi.mode(WIFI_STA);
   WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(zWIFI_SSID, zWIFI_PASS);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("WiFi failure");
     delay(5000);

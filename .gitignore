@@ -1,5 +1,8 @@
-secrets.sh
-
+.DS_Store*
+*/.DS_Store*
+secrets.h
+*/secrets.h
+build*
 
 
 # Byte-compiled / optimized / DLL files
