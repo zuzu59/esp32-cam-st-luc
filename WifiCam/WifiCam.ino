@@ -3,7 +3,7 @@
 // ATTENTION, ce code a été testé sur un ESP32-cam. Pas testé sur les autres boards !
 // Initial commit zf231111
 //
-#define zVERSION        "zf240907.1554"
+#define zVERSION        "zf240908.1051"
 #define zHOST           "esp-cam-st-luc"        // ATTENTION, tout en minuscule
 #define zDSLEEP         0                       // 0 ou 1 !
 #define TIME_TO_SLEEP   120                     // dSleep en secondes 
@@ -96,7 +96,7 @@ setup(){
 
   // Start WIFI
   zStartWifi();
-  sensorValue3 = WiFi.RSSI();
+  //sensorValue3 = WiFi.RSSI();
 
   // Start OTA server
   otaWebServer();
@@ -126,18 +126,14 @@ setup(){
   server.begin();
 }
 
-void
-loop()
-{
-  server.handleClient();
-}
+
 
 
 void loop() {
     // WEB server
     server.handleClient();
     // OTA loop
-    server.handleClient();
+    serverOTA.handleClient();
     // Délais non bloquant pour le sonarpulse
     zDelay1(zDelay1Interval);
 }

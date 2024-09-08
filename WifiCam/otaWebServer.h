@@ -1,7 +1,7 @@
 //
 // OTA WEB server
 //
-// zf240725.1746
+// zf240908.1053
 //
 // Sources:
 // https://lastminuteengineers.com/esp32-ota-web-updater-arduino-ide/
@@ -23,7 +23,7 @@
 #include "otaServerIndex.h"
 
 
-WebServer server(80);
+WebServer serverOTA(8080);
 
 static void otaWebServer() {
   /*use mdns for host name resolution*/
@@ -36,21 +36,21 @@ static void otaWebServer() {
   Serial.println("mDNS responder started");
 
   /*return index page which is stored in serverIndex */
-  server.on("/", HTTP_GET, []() {
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/html", loginIndex);
+  serverOTA.on("/", HTTP_GET, []() {
+    serverOTA.sendHeader("Connection", "close");
+    serverOTA.send(200, "text/html", loginIndex);
   });
-  server.on("/serverIndex", HTTP_GET, []() {
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/html", serverIndex);
+  serverOTA.on("/serverIndex", HTTP_GET, []() {
+    serverOTA.sendHeader("Connection", "close");
+    serverOTA.send(200, "text/html", serverIndex);
   });
   /*handling uploading firmware file */
-  server.on("/update", HTTP_POST, []() {
-    server.sendHeader("Connection", "close");
-    server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+  serverOTA.on("/update", HTTP_POST, []() {
+    serverOTA.sendHeader("Connection", "close");
+    serverOTA.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
     ESP.restart();
   }, []() {
-    HTTPUpload& upload = server.upload();
+    HTTPUpload& upload = serverOTA.upload();
     if (upload.status == UPLOAD_FILE_START) {
       Serial.printf("Update: %s\n", upload.filename.c_str());
       if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
@@ -69,5 +69,5 @@ static void otaWebServer() {
       }
     }
   });
-  server.begin();
+  serverOTA.begin();
 }
