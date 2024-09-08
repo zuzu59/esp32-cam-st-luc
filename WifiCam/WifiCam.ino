@@ -3,7 +3,7 @@
 // ATTENTION, ce code a été testé sur un ESP32-cam. Pas testé sur les autres boards !
 // Initial commit zf231111
 //
-#define zVERSION        "zf240908.1051"
+#define zVERSION        "zf240908.1601"
 #define zHOST           "esp-cam-st-luc"        // ATTENTION, tout en minuscule
 #define zDSLEEP         0                       // 0 ou 1 !
 #define TIME_TO_SLEEP   120                     // dSleep en secondes 
@@ -50,7 +50,7 @@ const int ledPin = 33;             // the number of the LED pin
 
 
 // ESP32-cam
-#include "WifiCam.hpp"
+//#include "WifiCam.hpp"
 
 
 // Sonar Pulse
@@ -76,9 +76,9 @@ IPAddress primaryDNS(8, 8, 8, 8);   //optional
 IPAddress secondaryDNS(8, 8, 4, 4); //optional
 
 
-esp32cam::Resolution initialResolution;
+// esp32cam::Resolution initialResolution;
 
-WebServer server(80);
+//WebServer server(80);
 
 void
 setup(){
@@ -104,46 +104,47 @@ setup(){
   // go go go
   Serial.println("\nC'est parti !\n");
 
-  using namespace esp32cam;
-  initialResolution = Resolution::find(1024, 768);
-  Config cfg;
-  cfg.setPins(pins::AiThinker);
-  cfg.setResolution(initialResolution);
-  cfg.setJpeg(80);
+  // using namespace esp32cam;
+  // initialResolution = Resolution::find(1024, 768);
+  // Config cfg;
+  // cfg.setPins(pins::AiThinker);
+  // cfg.setResolution(initialResolution);
+  // cfg.setJpeg(80);
 
-  bool ok = Camera.begin(cfg);
-  if (!ok) {
-    Serial.println("camera initialize failure");
-    delay(5000);
-    ESP.restart();
-  }
-  Serial.println("camera initialize success");
-  Serial.println("camera starting");
-  Serial.print("http://");
-  Serial.println(WiFi.localIP());
+  // bool ok = Camera.begin(cfg);
+  // if (!ok) {
+  //   Serial.println("camera initialize failure");
+  //   delay(5000);
+  //   ESP.restart();
+  // }
+  // Serial.println("camera initialize success");
+  // Serial.println("camera starting");
+  // Serial.print("http://");
+  // Serial.println(WiFi.localIP());
 
-  addRequestHandlers();
-  server.begin();
+  // addRequestHandlers();
+//  server.begin();
 }
 
 
 
 
 void loop() {
-    // WEB server
-    server.handleClient();
-    // OTA loop
-    serverOTA.handleClient();
-    // Délais non bloquant pour le sonarpulse
+    // Délais non bloquant pour le serveur WEB et OTA
     zDelay1(zDelay1Interval);
 }
 
 
-// Délais non bloquant pour le sonarpulse
+    // Délais non bloquant pour le serveur WEB et OTA
 void zDelay1(long zDelayMili){
   long zDelay1NextMillis = zDelayMili + millis(); 
   while(millis() < zDelay1NextMillis ){
-    // Un petit coup sonar pulse sur la LED pour dire que tout fonctionne bien
+    // WEB server
+//    server.handleClient();
+    // OTA loop
+    serverOTA.handleClient();
+    // Un petit coup de sonar pulse sur la LED pour dire que tout fonctionne bien
     sonarPulse();
-  }
+    }
+
 }
