@@ -3,11 +3,10 @@
 // ATTENTION, ce code a été testé sur un ESP32-cam. Pas testé sur les autres boards !
 // Initial commit zf231111
 //
-#define zVERSION        "zf240908.1601"
+#define zVERSION        "zf240908.1644"
 #define zHOST           "esp-cam-st-luc"        // ATTENTION, tout en minuscule
 #define zDSLEEP         0                       // 0 ou 1 !
 #define TIME_TO_SLEEP   120                     // dSleep en secondes 
-int zDelay1Interval =   5000;                   // Délais en mili secondes pour la boucle loop
 
 /*
 Utilisation:
@@ -49,8 +48,22 @@ const int ledPin = 33;             // the number of the LED pin
 //const int buttonPin = 9;          // the number of the pushbutton pin
 
 
+// Source: https://randomnerdtutorials.com/esp32-static-fixed-ip-address-arduino-ide/
+// Set your Static IP address
+IPAddress local_IP(192, 168, 1, 61);
+// Set your Gateway IP address
+IPAddress gateway(192, 168, 1, 1);
+
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(8, 8, 8, 8);   //optional
+IPAddress secondaryDNS(8, 8, 4, 4); //optional
+
+
 // ESP32-cam
-//#include "WifiCam.hpp"
+#include "WifiCam.hpp"
+
+esp32cam::Resolution initialResolution;
+WebServer server(80);
 
 
 // Sonar Pulse
@@ -64,21 +77,24 @@ const int ledPin = 33;             // the number of the LED pin
 // OTA WEB server
 #include "otaWebServer.h"
 
-
-// Source: https://randomnerdtutorials.com/esp32-static-fixed-ip-address-arduino-ide/
-// Set your Static IP address
-IPAddress local_IP(192, 168, 1, 61);
-// Set your Gateway IP address
-IPAddress gateway(192, 168, 1, 1);
-
-IPAddress subnet(255, 255, 255, 0);
-IPAddress primaryDNS(8, 8, 8, 8);   //optional
-IPAddress secondaryDNS(8, 8, 4, 4); //optional
+#define PWDN_GPIO_NUM    32
+// #define RESET_GPIO_NUM   -1
 
 
-// esp32cam::Resolution initialResolution;
+void disableCamera() {
+  // Désactiver les broches de contrôle de la caméra
+  pinMode(PWDN_GPIO_NUM, OUTPUT);
+  digitalWrite(PWDN_GPIO_NUM, LOW);
 
-//WebServer server(80);
+  // pinMode(RESET_GPIO_NUM, OUTPUT);
+  // digitalWrite(RESET_GPIO_NUM, LOW);
+
+  Serial.println("Camera disabled");
+}
+
+
+
+
 
 void
 setup(){
@@ -104,47 +120,38 @@ setup(){
   // go go go
   Serial.println("\nC'est parti !\n");
 
-  // using namespace esp32cam;
-  // initialResolution = Resolution::find(1024, 768);
-  // Config cfg;
-  // cfg.setPins(pins::AiThinker);
-  // cfg.setResolution(initialResolution);
-  // cfg.setJpeg(80);
+  // Configuration de la caméra
+  using namespace esp32cam;
+  initialResolution = Resolution::find(1024, 768);
+  Config cfg;
+  cfg.setPins(pins::AiThinker);
+  cfg.setResolution(initialResolution);
+  cfg.setJpeg(80);
+  bool ok = Camera.begin(cfg);
+  if (!ok) {
+    Serial.println("camera initialize failure");
+    delay(5000);
+    ESP.restart();
+  }
+  Serial.println("camera initialize success");
+  Serial.println("camera starting");
+  Serial.print("http://");
+  Serial.println(WiFi.localIP());
+  addRequestHandlers();
 
-  // bool ok = Camera.begin(cfg);
-  // if (!ok) {
-  //   Serial.println("camera initialize failure");
-  //   delay(5000);
-  //   ESP.restart();
-  // }
-  // Serial.println("camera initialize success");
-  // Serial.println("camera starting");
-  // Serial.print("http://");
-  // Serial.println(WiFi.localIP());
+  disableCamera();
 
-  // addRequestHandlers();
-//  server.begin();
+
+  server.begin();
 }
-
-
 
 
 void loop() {
-    // Délais non bloquant pour le serveur WEB et OTA
-    zDelay1(zDelay1Interval);
-}
-
-
-    // Délais non bloquant pour le serveur WEB et OTA
-void zDelay1(long zDelayMili){
-  long zDelay1NextMillis = zDelayMili + millis(); 
-  while(millis() < zDelay1NextMillis ){
     // WEB server
-//    server.handleClient();
+    server.handleClient();
     // OTA loop
     serverOTA.handleClient();
     // Un petit coup de sonar pulse sur la LED pour dire que tout fonctionne bien
     sonarPulse();
-    }
-
 }
+

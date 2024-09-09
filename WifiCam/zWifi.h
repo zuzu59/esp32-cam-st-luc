@@ -1,4 +1,4 @@
-// zf240908.1051
+// zf240908.1632
 
 // Sources:
 // https://randomnerdtutorials.com/esp32-useful-wi-fi-functions-arduino
@@ -25,11 +25,12 @@ void zWifiTrouble(){
   Serial.println("\nOn a un problème avec le WIFI !");
   delay(200);
   Serial.flush(); 
+#if zDSLEEP == 1
   // On part en dsleep pour économiser la batterie !
   esp_deep_sleep_start();
-    // ESP.restart();
+#endif
+  ESP.restart();
 }
-
 
 
 #ifdef zWifiAuto
@@ -66,6 +67,7 @@ void zWifiTrouble(){
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(100);
+     Serial.println("On scanne les AP WIFI");
     int n = WiFi.scanNetworks();
     Serial.print("Number SSID scanned: ");
     Serial.println(n);
@@ -94,7 +96,7 @@ void zWifiTrouble(){
       Serial.print("Connecting to ");
       Serial.println(best_ssid);
       int connAttempts = 0;
-      while (WiFi.status() != WL_CONNECTED && connAttempts < 30) {
+      while (WiFi.status() != WL_CONNECTED && connAttempts < 60) {
         delay(500);
         Serial.print(".");
         connAttempts++;
