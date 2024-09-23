@@ -1,6 +1,6 @@
 #!/bin/ash
 #Petit script pour prendre une image de la mini caméras esp32-cam et l'envoyer sur un serveur d'images
-#zf231204.1721, zf231211.1431, zf240729.2235
+#zf231204.1721, zf231211.1431, zf240923.1720
 
 
 zAPP_FOLDER=$(/usr/bin/dirname $0)
@@ -31,7 +31,8 @@ zAPP_SERVER_USER: $zAPP_SERVER_USER
 
 cp $zAPP_FOLDER/no_video-512.jpg $zIMAGE_LOCAL		# pour voir si la caméra est en panne ?  zf240728.1637
 
-wget -O $zIMAGE_LOCAL http://192.168.1.61/1600x1200.jpg
+#wget -O $zIMAGE_LOCAL http://192.168.1.61/1600x1200.jpg
+wget -O $zIMAGE_LOCAL http://esp32-9A6E74.lan/1600x1200.jpg
 
 #Envoie l'image dans la structure images
 $zAPP_FOLDER/send_image.sh $zIMAGE_LOCAL $zAPP_SERVER_USER@$zAPP_SERVER_NAME $zTARGET_IMAGE $zTIME.jpg
