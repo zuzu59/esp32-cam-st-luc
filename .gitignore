@@ -3,6 +3,7 @@
 secrets.h
 */secrets.h
 build*
+secrets.sh
 
 
 # Byte-compiled / optimized / DLL files
