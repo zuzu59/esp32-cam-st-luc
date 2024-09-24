@@ -1,6 +1,6 @@
 #!/bin/bash
 # Petit script pour la réalisation d'un petit film à base d'images pour les images de la caméra de St-Luc
-# zf231209.1734, zf240924.1802
+# zf231209.1734, zf240925.0039
 #
 # Sources: https://www.rickmakes.com/create-timelapse-from-ip-camera-using-curl-wget-and-ffmpeg/
 
