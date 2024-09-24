@@ -1,6 +1,6 @@
 #!/bin/bash
 # Petit script pour la réalisation, après coup, d'un petit film à base d'images pour la caméra de St-Luc
-# zf231209.1736, zf231211.1449
+# zf231209.1736, zf240924.2348
 #
 # Sources: https://www.rickmakes.com/create-timelapse-from-ip-camera-using-curl-wget-and-ffmpeg/
 
@@ -10,9 +10,9 @@ zIMAGES_FOLDER=$zDATA_FOLDER/images
 zACTUAL_FOLDER=$zDATA_FOLDER/actual
 zVIDEOS_FOLDER=$zDATA_FOLDER/videos
 
-zYEAR=2023
-zMONTH=12
-zDAY=05
+zYEAR=2024
+zMONTH=09
+zDAY=24
 zTIME=`date +%H%M%S`
 
 zTARGET_IMAGES=$zIMAGES_FOLDER/$zYEAR/$zMONTH/$zDAY

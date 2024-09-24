@@ -36,13 +36,9 @@ while IFS= read -r file_path; do
     timestamp=$(basename "$file_path" | cut -d'.' -f1)
     formatted_timestamp=$(echo "$timestamp" | sed -e 's/\(..\)\(..\)\(..\)/\1:\2:\3/')
 
-    # Afficher les valeurs des variables pour vérification
-    echo "Timestamp: $timestamp"
-    #echo "Formatted Timestamp: $formatted_timestamp"
-
     # Générer l'image avec le timestamp incrusté
     output_file="$tmp_dir/$(basename "$file_path")"
-    convert "$file_path" -gravity NorthWest -pointsize 24 -fill white -annotate +10+10 "$formatted_timestamp" "$output_file"
+    ffmpeg -i "$file_path" -vf "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='$formatted_timestamp':fontcolor=white:fontsize=24:x=10:y=10" -q:v 2 "$output_file"
 done < "$1/images.txt"
 
 # Générer la liste des fichiers temporaires avec leur chemin d'accès complet
@@ -61,8 +57,6 @@ ffmpeg_command+=" '$2/0_video.mp4'"
 echo "Commande ffmpeg :"
 echo $ffmpeg_command
 eval $ffmpeg_command
-
-exit
 
 # Nettoyer les fichiers temporaires
 rm -rf "$tmp_dir"
