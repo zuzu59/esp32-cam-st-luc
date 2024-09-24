@@ -62,7 +62,6 @@ echo "Commande ffmpeg :"
 echo $ffmpeg_command
 eval $ffmpeg_command
 
-exit
 
 # Nettoyer les fichiers temporaires
 rm -rf "$tmp_dir"
