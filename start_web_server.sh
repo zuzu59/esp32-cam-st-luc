@@ -4,7 +4,7 @@
 #
 # ATTENTION: il faut modifier le port et le dossier racine dans le fichier $zAPP_FOLDER/lighttpd.conf !
 #
-#zf231211.1756, zf240731.1556, zf240930.0953
+#zf231211.1756, zf240731.1556, zf250114.1737
 #
 # Remarques:
 # Pour que le directory browsing soit responsive sur un smartphone, il faut modifier le CSS du directory-browsing !
@@ -27,14 +27,14 @@ zAPP_FOLDER: $zAPP_FOLDER
 zDATA_FOLDER: $zDATA_FOLDER
 "
 
-sudo pkill lighttpd
+/usr/bin/sudo /usr/bin/pkill lighttpd
 
 # permet de rendre non fonctionnel le directory browsing dans la racine
 # afin de diminuer la surface d'attaque
-touch $zDATA_FOLDER/index.html
+#touch $zDATA_FOLDER/index.html
 
 # permet d'avoir une page dashboard dans la racine du site
-cp $zAPP_FOLDER/index.html $zDATA_FOLDER/dashboard.html
+cp $zAPP_FOLDER/index.html $zDATA_FOLDER/index.html
 
 # permet d'être responsive sur un smartphone
 cp $zAPP_FOLDER/custom.css $zDATA_FOLDER/custom.css
@@ -47,7 +47,10 @@ echo -e "
 Si jamais pour info:
 
 crontab -e
-@reboot  sleep 30 && /root/dev/esp32-cam-st-luc/start_web_server.sh     # Démarre le serveur web au boot de la machine
+
+@reboot /usr/bin/sleep 30 ; /home/ubuntu/dev/esp32-cam-st-luc/start_web_server.sh >> /home/ubuntu/cron.log 2>&1     # Démarre le serveur web au boot de la machine
+
+
 
 Et pour l'arrêter, il faut faire: 
 
