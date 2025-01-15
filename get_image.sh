@@ -1,10 +1,11 @@
 #!/bin/ash
 #Petit script pour prendre une image de la mini caméras esp32-cam et l'envoyer sur un serveur d'images
-#zf231204.1721, zf231211.1431, zf241023.1446
+#zf231204.1721, zf231211.1431, zf241023.1446, zf250115.1605
 
 
 zAPP_FOLDER=$(/usr/bin/dirname $0)
-zDATA_FOLDER=/home/ubuntu/data
+#zDATA_FOLDER=/home/ubuntu/data
+zDATA_FOLDER=/mnt/data
 zIMAGES_FOLDER=$zDATA_FOLDER/images
 zACTUAL_FOLDER=$zDATA_FOLDER/actual
 zIMAGE_LOCAL=/root/actual.jpg
