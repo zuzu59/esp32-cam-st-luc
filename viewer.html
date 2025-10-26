@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Viewer – Photothèque St‑Luc</title>
+  <style>
+    body {font-family: sans-serif; text-align: center; margin: 2rem;}
+    img  {border: 1px solid #ccc; max-width: 100%; height: auto;}
+    button {margin: 1rem; padding: .5rem 1rem;}
+  </style>
+</head>
+<body>
+
+<h1>Visionneur d’images</h1>
+
+<div id="viewer">
+  <!-- l’image sera injectée ici -->
+</div>
+
+<div id="controls" style="display:none;">
+  <button id="prevBtn">Précédente</button>
+  <button id="nextBtn">Suivante</button>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   1️⃣ Récupération de l’URL “image” depuis les paramètres d’URL
+   ------------------------------------------------------------------ */
+function getImageUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const img = params.get('image');
+  if (!img) {
+    document.body.innerHTML = '<p style="color:red;">❌ Aucun paramètre <code>image</code> fourni.</p>';
+    return null;
+  }
+  return decodeURIComponent(img);
+}
+
+/* ------------------------------------------------------------------
+   2️⃣ Calcul de la prochaine / précédente image
+   ------------------------------------------------------------------ */
+function pad(n, width=2) {
+  return n.toString().padStart(width, '0');
+}
+
+function adjustTimestamp(url, deltaMinutes) {
+  const lastSlash = url.lastIndexOf('/');
+  const basePath  = url.substring(0, lastSlash + 1);          // https://.../externe/
+  const filename  = url.substring(lastSlash + 1);             // 075800.jpg
+
+  const match = filename.match(/(\d{6})\.jpg$/i);
+  if (!match) { return null; }
+
+  // Convertir hhmmss → nombre total de secondes
+  const hh = parseInt(match[1].substring(0, 2), 10);
+  const mm = parseInt(match[1].substring(2, 4), 10);
+  const ss = parseInt(match[1].substring(4, 6), 10);
+  let totalSeconds = hh * 3600 + mm * 60 + ss;
+
+  // Appliquer le delta
+  totalSeconds += deltaMinutes * 60;
+
+  // Gérer le wrap‑around : 0 → 86399
+  totalSeconds = ((totalSeconds % 86400) + 86400) % 86400;
+
+  // Convertir à nouveau en hhmmss
+  const newH = Math.floor(totalSeconds / 3600);
+  const newM = Math.floor((totalSeconds % 3600) / 60);
+  const newS = totalSeconds % 60;
+
+  const newFilename = `${pad(newH)}${pad(newM)}${pad(newS)}.jpg`;
+  return basePath + newFilename;
+}
+
+/* ------------------------------------------------------------------
+   3️⃣ Mise en place du DOM et des handlers
+   ------------------------------------------------------------------ */
+function init() {
+  const imgUrl = getImageUrl();
+  if (!imgUrl) return;
+
+  // Créer l’élément <img>
+  const img = document.createElement('img');
+  img.src = imgUrl;
+  img.alt = "Image à afficher";
+  img.onerror = () => {
+    img.parentNode.insertAdjacentHTML('afterend',
+      '<p style="color:red;">❌ Impossible de charger l’image.</p>');
+  };
+
+  const viewer = document.getElementById('viewer');
+  viewer.appendChild(img);
+
+  // Boutons
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+
+  nextBtn.onclick = () => navigate(imgUrl, 1);
+  prevBtn.onclick = () => navigate(imgUrl, -1);
+
+  document.getElementById('controls').style.display = 'block';
+}
+
+/* ------------------------------------------------------------------
+   4️⃣ Navigation – on reconstruit l’URL et on recharge la page
+   ------------------------------------------------------------------ */
+function navigate(currentUrl, delta) {
+  const newImageUrl = adjustTimestamp(currentUrl, delta);
+  if (!newImageUrl) return;
+
+  // Changer l’URL de la page en ajoutant le nouveau paramètre image
+  const base = window.location.origin + window.location.pathname;
+  const newPage = `${base}?image=${encodeURIComponent(newImageUrl)}`;
+  window.location.href = newPage;
+}
+
+/* ------------------------------------------------------------------
+   5️⃣ Démarrage
+   ------------------------------------------------------------------ */
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
+

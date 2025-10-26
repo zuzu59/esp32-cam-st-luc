@@ -4,7 +4,7 @@
 #
 # ATTENTION: il faut modifier le port et le dossier racine dans le fichier $zAPP_FOLDER/lighttpd.conf !
 #
-#zf231211.1756, zf240731.1556, zf250116.1608
+#zf231211.1756, zf240731.1556, zf250116.1608, zf251026.1225
 #
 # Remarques:
 # Pour que le directory browsing soit responsive sur un smartphone, il faut modifier le CSS du directory-browsing !
@@ -36,6 +36,9 @@ zDATA_FOLDER: $zDATA_FOLDER
 
 # permet d'avoir une page dashboard dans la racine du site
 cp $zAPP_FOLDER/index.html $zDATA_FOLDER/index.html
+
+# permet d'avoir une page viewer dans la racine du site
+cp $zAPP_FOLDER/viewer.html $zDATA_FOLDER/viewer.html
 
 # permet d'être responsive sur un smartphone
 cp $zAPP_FOLDER/custom.css $zDATA_FOLDER/custom.css
